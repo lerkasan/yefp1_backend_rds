@@ -1,0 +1,84 @@
+services:
+  backend_rds:
+    # image: ${AWS_ACCOUNT_ID:-latest}.dkr.ecr.us-east-1.amazonaws.com/yefp1/backend-rds:${BACKEND_RDS_TAG:-latest}
+    container_name: backend_rds
+    build: 
+      context: .
+    restart: unless-stopped
+    user: appuser
+    cap_drop:
+      - ALL
+    security_opt:
+      - "no-new-privileges=true"
+    read_only: true
+    tmpfs:
+      - /tmp
+    # env_file:
+    #   - .backend.env
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+      - DEBUG=${DEBUG}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+    ports:
+      - "8000:8000"
+    networks:
+       - app
+       - db
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8000/test_connection || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: postgres:16.3-alpine3.20@sha256:d037653693c4168efbb95cdc1db705d31278a4a8d608d133eca1f07af9793960
+    container_name: database
+    restart: unless-stopped
+    user: postgres
+    cap_drop:
+      - ALL
+    security_opt:
+      - "no-new-privileges=true"
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD_FILE=/run/secrets/app/DB_PASSWD
+    secrets:
+      - source: DB_PASSWD
+        target: /run/secrets/app/DB_PASSWD
+    networks:
+      - db
+    volumes:
+      # - ./backcore/db/init:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${DB_NAME} -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+    postgres_data:
+
+secrets:
+  DB_PASSWD:
+    # environment: DB_PASSWORD
+    file: ../secrets/backend_rds/datasource_password
+
+networks:
+    app:
+    db:

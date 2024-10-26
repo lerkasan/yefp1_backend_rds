@@ -1,0 +1,7 @@
+Dockerfile*
+compose*.yml
+aws/
+appspec.yml
+.env
+.gitignore
+.dockerignore

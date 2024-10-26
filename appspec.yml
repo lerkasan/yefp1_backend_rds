@@ -1,0 +1,33 @@
+version: 0.0
+os: linux
+files:
+  - source: compose.yml
+    destination: /home/ubuntu/app/
+  - source: aws/amazon-cloudwatch-agent.json
+    destination: /opt/aws/amazon-cloudwatch-agent/etc/
+permissions:
+  - object: /home/ubuntu/app/
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+hooks:
+  BeforeInstall:
+    - location: aws/scripts/before-install.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: aws/scripts/after-install.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: aws/scripts/application-start.sh
+      timeout: 300
+      runas: ubuntu
+  ApplicationStop:
+    - location: aws/scripts/application-stop.sh
+      timeout: 300
+      runas: ubuntu
+  ValidateService:
+    - location: aws/scripts/validate-service.sh
+      timeout: 300
+      runas: ubuntu
