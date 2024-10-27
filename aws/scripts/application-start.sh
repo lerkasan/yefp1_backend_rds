@@ -22,7 +22,7 @@ DB_HOST=$(aws ssm get-parameter --region "$AWS_REGION" --name "${APPLICATION_NAM
 DB_NAME=$(aws ssm get-parameter --region "$AWS_REGION" --name "${APPLICATION_NAME}_database_name" --with-decryption --query Parameter.Value --output text)
 DB_USER=$(aws ssm get-parameter --region "$AWS_REGION" --name "${APPLICATION_NAME}_database_username" --with-decryption --query Parameter.Value --output text)
 DB_PASSWORD=$(aws ssm get-parameter --region "$AWS_REGION" --name "${APPLICATION_NAME}_database_password" --with-decryption --query Parameter.Value --output text)
-SECRET_KEY=$(aws ssm get-parameter --region "$AWS_REGION" --name "${APPLICATION_NAME}_secret_key" --with-decryption --query Parameter.Value --output text)
+SECRET_KEY=$(aws ssm get-parameter --region "$AWS_REGION" --name "${APPLICATION_NAME}_api_secret_key" --with-decryption --query Parameter.Value --output text)
 
 export DB_HOST="$DB_HOST"
 export DB_NAME="$DB_NAME"

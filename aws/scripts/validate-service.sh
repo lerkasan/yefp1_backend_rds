@@ -4,7 +4,7 @@ set -x
 NUMBER_OF_ATTEMPTS=10
 SLEEP_TIME=3
 
-URL=http://localhost:8000/test_connection
+URL=http://localhost:8000/test_connection/
 
 # Ensure Tomcat is running by making an HTTPS GET request to the default page.
 # Don't try and verify the certificate; use the --insecure flag.

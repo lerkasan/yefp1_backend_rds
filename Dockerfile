@@ -33,11 +33,9 @@ ARG APP_USER=appuser
 ARG APP_GROUP=appgroup
 ARG WORK_DIR=/app
 
-# ARG SECRET_KEY
-# ARG DEBUG
-
 WORKDIR "$WORK_DIR"
 
+ENV DEBUG=False
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
