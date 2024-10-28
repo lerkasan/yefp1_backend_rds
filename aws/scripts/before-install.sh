@@ -1,12 +1,14 @@
 #!/bin/bash
 set -xe
 
+APP_DIR=/home/ubuntu/backend_rds
+
 # Delete the old  directory as needed.
-if [ -d /home/ubuntu/app ]; then
-    rm -rf /home/ubuntu/app/
+if [ -d "$APP_DIR" ]; then
+    rm -rf "$APP_DIR"
 fi
 
-mkdir -vp /home/ubuntu/app/
-chown -R ubuntu:ubuntu /home/ubuntu/app/
+mkdir -vp "$APP_DIR"
+chown -R ubuntu:ubuntu "$APP_DIR"
 
-docker system prune -a
+# docker system prune -a

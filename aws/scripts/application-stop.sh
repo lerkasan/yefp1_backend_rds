@@ -1,5 +1,7 @@
 #!/bin/bash
 set -xe
 
-cd /home/ubuntu/app || exit
+APP_DIR=/home/ubuntu/backend_rds
+
+cd "$APP_DIR" || exit
 docker compose down

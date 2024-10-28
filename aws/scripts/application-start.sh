@@ -3,6 +3,8 @@ set -xe
 
 APPLICATION_NAME="yefp1"
 DEPLOYMENT_GROUP_NAME="stage"
+APP_DIR=/home/ubuntu/backend_rds
+
 CORS_ALLOWED_ORIGINS="http://localhost"
 DEBUG=False
 DB_PORT=5432
@@ -37,5 +39,5 @@ export DEBUG="$DEBUG"
 export BACKEND_RDS_TAG="${BACKEND_RDS_TAG:-latest}"
 export AWS_ACCOUNT_ID="$AWS_ACCOUNT_ID"
 
-cd /home/ubuntu/app || exit
+cd "$APP_DIR" || exit
 docker compose up -d
