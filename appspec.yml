@@ -5,6 +5,7 @@ files:
     destination: /home/ubuntu/backend_rds/
   - source: aws/amazon-cloudwatch-agent.json
     destination: /opt/aws/amazon-cloudwatch-agent/etc/
+file_exists_behavior: OVERWRITE
 permissions:
   - object: /home/ubuntu/backend_rds/
     pattern: "**"

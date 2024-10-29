@@ -1,12 +1,11 @@
 #!/bin/bash
-set -xe
+set -eou pipefail
 
 PROJECT_NAME="yefp1"
 APPLICATION_NAME="backend_rds"
 DEPLOYMENT_GROUP_NAME="stage_${APPLICATION_NAME}"
 APP_DIR="/home/ubuntu/${APPLICATION_NAME}"
 
-CORS_ALLOWED_ORIGINS="http://localhost"
 DEBUG=False
 
 AWS_REGION=$(curl -s http://169.254.169.254/latest/meta-data/placement/region)
@@ -26,6 +25,7 @@ DB_NAME=$(aws ssm get-parameter --region "$AWS_REGION" --name "${PROJECT_NAME}_d
 DB_USER=$(aws ssm get-parameter --region "$AWS_REGION" --name "${PROJECT_NAME}_database_username" --with-decryption --query Parameter.Value --output text)
 DB_PASSWORD=$(aws ssm get-parameter --region "$AWS_REGION" --name "${PROJECT_NAME}_database_password" --with-decryption --query Parameter.Value --output text)
 SECRET_KEY=$(aws ssm get-parameter --region "$AWS_REGION" --name "${PROJECT_NAME}_api_secret_key" --with-decryption --query Parameter.Value --output text)
+CORS_ALLOWED_ORIGINS=$(aws ssm get-parameter --region "$AWS_REGION" --name "${PROJECT_NAME}_cors_allowed_origins" --with-decryption --query Parameter.Value --output text)
 
 export DB_HOST="$DB_HOST"
 export DB_PORT="${DB_PORT:-5432}"
@@ -35,7 +35,7 @@ export DB_PASSWORD="$DB_PASSWORD"
 export DB_PORT="$DB_PORT"
 
 export API_SECRET_KEY="$SECRET_KEY"
-export API_CORS_ALLOWED_ORIGINS="$CORS_ALLOWED_ORIGINS"
+export API_CORS_ALLOWED_ORIGINS="${CORS_ALLOWED_ORIGINS:-http://localhost}"
 export API_DEBUG="${DEBUG:-False}"
 
 export BACKEND_RDS_TAG="${BACKEND_RDS_TAG:-latest}"
