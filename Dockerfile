@@ -22,8 +22,6 @@ RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev && \
   python3 -m venv "$VIRTUAL_ENV" && \
   pip3 install -r requirements.txt --no-cache-dir && \
   apk --purge del .build-deps
-#   && \
-#   python3 manage.py collectstatic --no-input
 
 
 
@@ -49,13 +47,16 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder --chown="$APP_USER":"$APP_GROUP" "$WORK_DIR" "$WORK_DIR"
+COPY docker-entrypoint.sh "$WORK_DIR"
 
 RUN addgroup "$APP_GROUP" && \
   adduser --disabled-password --shell /usr/sbin/nologin -G "$APP_GROUP" "$APP_USER" && \
+  chmod +x "$WORK_DIR/docker-entrypoint.sh" && \
+  chown "$APP_USER":"$APP_GROUP" "$WORK_DIR/docker-entrypoint.sh" && \
   apk add --no-cache libpq
 
 USER "$APP_USER"
 
 EXPOSE 8000
 
-CMD [ "gunicorn", "backend_rds.wsgi:application", "--bind", "0.0.0.0:8000" ]
+ENTRYPOINT [ "/app/docker-entrypoint.sh" ]

@@ -1,19 +1,15 @@
 services:
   backend_rds:
-    # image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/yefp1/backend-rds:${BACKEND_RDS_TAG:-latest}
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/yefp1/backend-rds:${BACKEND_RDS_TAG:-latest}
     # container_name: backend_rds
     build: 
       context: .
     restart: unless-stopped
-    # deploy:
-    #   resources:
-    #     limits:
-    #       cpus: '2'
-    #       memory: 768M
-    #       pids: 1
-    #     reservations:
-    #       cpus: '1'
-    #       memory: 512M
+    # deploy: 
+    #   replicas: 2
+    #   placement:
+    #     constraints:
+    #       - node.role != manager
     user: appuser
     cap_drop:
       - ALL
@@ -34,9 +30,6 @@ services:
     secrets:
       - db_password
       - secret_key
-      # - django_superuser_email
-      # - django_superuser_username
-      # - django_superuser_password
     ports:
       - "8000:8000"
     networks:
@@ -49,14 +42,18 @@ services:
       retries: 5
       start_period: 30s
     depends_on:
-      database:
-        condition: service_healthy
+      - database
 
   database:
     image: postgres:16.3-alpine3.20@sha256:d037653693c4168efbb95cdc1db705d31278a4a8d608d133eca1f07af9793960
-    container_name: database
+    # container_name: database
     restart: unless-stopped
     user: postgres
+    # deploy: 
+    #   replicas: 1
+    #   placement:
+    #     constraints:
+    #       - node.role != manager
     cap_drop:
       - ALL
     security_opt:
@@ -88,15 +85,9 @@ volumes:
 
 secrets:
   db_password:
-    file: ../secrets/backend_rds/datasource_password
+    external: true
   secret_key:
-    file: ../secrets/backend_rds/django_secret_key
-  # django_superuser_email:
-  #   file: ../secrets/backend_rds/django_superuser_email
-  # django_superuser_username:
-  #   file: ../secrets/backend_rds/django_superuser_username
-  # django_superuser_password:
-  #   file: ../secrets/backend_rds/django_superuser_password
+    external: true
 
 networks:
     app:
