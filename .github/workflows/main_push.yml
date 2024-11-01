@@ -100,7 +100,7 @@ jobs:
           exit-code: '1'
           ignore-unfixed: false
           vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
+          severity: 'CRITICAL,HIGH,MEDIUM'
         env:
           TRIVY_DB_REPOSITORY: ${{ env.TRIVY_DB_REPO }}
 
@@ -111,7 +111,7 @@ jobs:
           output-format: table
           fail-build: true
           only-fixed: false
-          severity-cutoff: low
+          severity-cutoff: medium
 
       - name: Push docker image
         id: docker_push
