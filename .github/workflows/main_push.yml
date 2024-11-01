@@ -14,6 +14,7 @@ env:
   APPLICATION_NAME: ${{ vars.APPLICATION_NAME }}
   DEPLOYMENT_GROUP: ${{ vars.DEPLOYMENT_GROUP }}
   HEALTH_CHECK_URL: ${{ vars.HEALTH_CHECK_URL }}
+  env.TRIVY_DB_REPO: 'public.ecr.aws/aquasecurity/trivy-db:2'
 
 jobs:
 
@@ -100,6 +101,8 @@ jobs:
           ignore-unfixed: false
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+        env:
+          TRIVY_DB_REPOSITORY: ${{ env.TRIVY_DB_REPO }}
 
       - name: Scan docker image for vulnerabilities with Grype
         uses: anchore/scan-action@d43cc1dfea6a99ed123bf8f3133f1797c9b44492 # v4.1.0
