@@ -1,4 +1,4 @@
-name: CI/CD for Backend RDS 
+name: CI/CD for Backend RDS
 
 on:
   push:
@@ -94,20 +94,19 @@ jobs:
         with:
           name: coverage-report-${{ matrix.python-version }}
           path: coverage.xml
-        #   name: coverage-report-${{ matrix.python-version }}
         #   path: coverage-${{ matrix.python-version }}.xml
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@383f7e52eae3ab0510c3cb0e7d9d150bbaeab838   #v3.1.0
         with:
           args: >
-            -Dsonar.organization=lerkasan
-            -Dsonar.projectKey=lerkasan_yefp1_backend_rds
-            -Dsonar.python.version=3.12
+            -Dsonar.organization=${{ github.repository_owner }}
+            -Dsonar.projectKey=${{ github.repository_owner }}_yefp1_backend_redis
+            -Dsonar.python.version=${{ matrix.python-version }}
             -Dsonar.python.coverage.reportPaths=coverage.xml
             -Dsonar.test.exclusions=tests/**
             -Dsonar.tests=tests/
-            -Dsonar.verbose=true
+            -Dsonar.verbose=false
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
