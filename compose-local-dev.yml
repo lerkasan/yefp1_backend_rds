@@ -1,19 +1,10 @@
 services:
   backend_rds:
     # image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/yefp1/backend-rds:${BACKEND_RDS_TAG:-latest}
-    # container_name: backend_rds
+    container_name: backend_rds
     build: 
       context: .
     restart: unless-stopped
-    # deploy:
-    #   resources:
-    #     limits:
-    #       cpus: '2'
-    #       memory: 768M
-    #       pids: 1
-    #     reservations:
-    #       cpus: '1'
-    #       memory: 512M
     user: appuser
     cap_drop:
       - ALL
@@ -34,9 +25,6 @@ services:
     secrets:
       - db_password
       - secret_key
-      # - django_superuser_email
-      # - django_superuser_username
-      # - django_superuser_password
     ports:
       - "8000:8000"
     networks:
@@ -74,7 +62,6 @@ services:
     networks:
       - db
     volumes:
-      # - ./backcore/db/init:/docker-entrypoint-initdb.d
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d ${DB_NAME} -U ${DB_USER}"]
@@ -91,12 +78,6 @@ secrets:
     file: ../secrets/backend_rds/datasource_password
   secret_key:
     file: ../secrets/backend_rds/django_secret_key
-  # django_superuser_email:
-  #   file: ../secrets/backend_rds/django_superuser_email
-  # django_superuser_username:
-  #   file: ../secrets/backend_rds/django_superuser_username
-  # django_superuser_password:
-  #   file: ../secrets/backend_rds/django_superuser_password
 
 networks:
     app:

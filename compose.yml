@@ -20,9 +20,6 @@ services:
     secrets:
       - db_password
       - secret_key
-      # - django_superuser_email
-      # - django_superuser_username
-      # - django_superuser_password
     ports:
       - "8000:8000"
     networks:
@@ -39,12 +36,6 @@ secrets:
     file: /home/ubuntu/backend_rds/db_password
   secret_key:
     file: /home/ubuntu/backend_rds/django_secret_key
-  # django_superuser_email:
-  #   file: /home/ubuntu/backend_rds/django_superuser_email
-  # django_superuser_username:
-  #   file: /home/ubuntu/backend_rds/django_superuser_username
-  # django_superuser_password:
-  #   file: /home/ubuntu/backend_rds/django_superuser_password
 
 networks:
     app:
